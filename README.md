@@ -1,4 +1,4 @@
-# kelulusan
+# Kelulusan
 Sistem Sederhana Informasi Kelulusan
 
 Buat database, bisa lewat phpmyadmin
