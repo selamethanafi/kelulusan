@@ -6,12 +6,75 @@ if(!isset($_SERVER["HTTPS"]) || $_SERVER["HTTPS"] != "on")
     //Prevent the rest of the script from executing.
     exit;
 }
+function tanggal_panjang($tanggale)
+{
+	$str= $tanggale;
+	$postedyear=substr($str,0,4);
+	$postedmonth=substr($str,5,2);
+	$postedday=substr($str,8,2);
+	if($postedday<10)
+	{
+		$postedday = substr($postedday,-1);
+	}
+	$bulan='';
+	if ($postedmonth=="01")
+	{
+    	$bulan = "Januari";
+	}
+	if ($postedmonth=="02")
+	{
+		$bulan = "Februari";
+	}
+	if ($postedmonth=="03")
+	{
+		$bulan = "Maret";
+	}
+	if ($postedmonth=="04")
+	{
+		$bulan = "April";
+	}
+	if ($postedmonth=="05")
+	{
+		$bulan = "Mei";
+	}
+	if ($postedmonth=="06")
+	{
+		$bulan = "Juni";
+	}
+	if ($postedmonth=="07")
+	{
+		$bulan = "Juli";
+	}
+	if ($postedmonth=="08")
+	{
+		$bulan = "Agustus";
+	}
+	if ($postedmonth=="09")
+	{
+		$bulan = "September";
+	}
+	if ($postedmonth=="10")
+	{
+		$bulan = "Oktober";
+	}
+	if ($postedmonth=="11")
+	{
+		$bulan = "November";
+	}
+	if ($postedmonth=="12")
+	{
+		$bulan = "Desember";
+	}
+	$tanggalpanjang = "$postedday $bulan $postedyear";	
+	return $tanggalpanjang;	
+}
 $server = "localhost"; //ganti sesuai server Anda
-$db_user = "root"; //ganti sesuai username Anda
-$db_pass = ""; //ganti sesuai password Anda
-$database = ""; //ganti sesuatu nama database Anda
+$db_user = "mante392_utele"; //ganti sesuai username Anda
+$db_pass = "g%Z]-}I)_UtX"; //ganti sesuai password Anda
+$database = "mante392_tele"; //ganti sesuatu nama database Anda
 $nama_sekolah = 'MA Negeri 2 Semarang';
-$tanggal = '2020-04-17 08:00:00';
+$tanggal = '2020-05-04 08:00:00';
+$tanggal_panjang = tanggal_panjang($tanggal);
 // Koneksi dan memilih database di server
 $mysqli = new mysqli($server,$db_user,$db_pass,$database) or die("Koneksi gagal");
 
@@ -56,7 +119,7 @@ function antiinjeksi($text){
     }
 	/* Set a background image by replacing the URL below */
 body {
-  background: url('https://source.unsplash.com/twukN12EN7c/1920x1080') no-repeat center center fixed;
+  background: url('https://t.man2semarang.sch.id/latar.jpg') no-repeat center center fixed;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   background-size: cover;
@@ -66,6 +129,7 @@ body {
 </head>
 <body>
 <?php
+//https://source.unsplash.com/twukN12EN7c/1920x1080
 $nama = '';
 $nomor_um ='';
 $currentTime = time();//date("Y-m-d H:i:s");
@@ -171,7 +235,7 @@ var x = setInterval(function() {
   var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
   // Display the result in the element with id="demo"
-  document.getElementById("demo").innerHTML = "<p class=\"text-center\">Kelulusan akan diumumkan <?php echo $tanggal;?> ("+ days + " hari " + hours + " jam "
+  document.getElementById("demo").innerHTML = "<p class=\"text-center\"><b>Rencana</b> Kelulusan akan diumumkan</p><p class=\"text-center\"><?php echo $tanggal_panjang;?></p><p class=\"text-center\">("+ days + " hari " + hours + " jam "
   + minutes + " menit " + seconds + " detik)</p>";
 
   // If the count down is finished, write some text
