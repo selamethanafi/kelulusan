@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.4
+-- version 4.8.0.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Generation Time: Apr 16, 2020 at 07:29 PM
--- Server version: 10.2.31-MariaDB-cll-lve
--- PHP Version: 7.3.6
+-- Host: 127.0.0.1
+-- Generation Time: May 02, 2020 at 11:08 AM
+-- Server version: 10.1.32-MariaDB
+-- PHP Version: 5.6.36
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -18,25 +18,25 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
+--
+-- Database: `mante392_tele`
+--
+
 -- --------------------------------------------------------
 
 --
 -- Table structure for table `kelulusan`
 --
 
-DROP TABLE IF EXISTS `kelulusan`;
 CREATE TABLE `kelulusan` (
   `nomor_um` varchar(30) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `password` varchar(10) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
-  `nama` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL
+  `nama` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
+  `dilihat` int(1) DEFAULT NULL,
+  `waktu` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `ibu_kandung` varchar(200) DEFAULT NULL,
+  `tgllhr` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `kelulusan`
---
-
-INSERT INTO `kelulusan` (`nomor_um`, `password`, `nama`) VALUES
-('001.19.20.363.209', '123456', 'Dilan Prakoso');
 
 --
 -- Indexes for dumped tables
