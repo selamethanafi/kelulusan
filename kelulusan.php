@@ -69,11 +69,12 @@ function tanggal_panjang($tanggale)
 	return $tanggalpanjang;	
 }
 $server = "localhost"; //ganti sesuai server Anda
-$db_user = "mante392_utele"; //ganti sesuai username Anda
-$db_pass = "g%Z]-}I)_UtX"; //ganti sesuai password Anda
-$database = "mante392_tele"; //ganti sesuatu nama database Anda
+$db_user = "root"; //ganti sesuai username Anda
+$db_pass = ""; //ganti sesuai password Anda
+$database = ""; //ganti sesuatu nama database Anda
 $nama_sekolah = 'MA Negeri 2 Semarang';
-$tanggal = '2020-05-04 08:00:00';
+$tanggal = '2020-05-01 15:51:00';
+$pukul = substr($tanggal,-8);
 $tanggal_panjang = tanggal_panjang($tanggal);
 // Koneksi dan memilih database di server
 $mysqli = new mysqli($server,$db_user,$db_pass,$database) or die("Koneksi gagal");
@@ -133,78 +134,96 @@ body {
 $nama = '';
 $nomor_um ='';
 $currentTime = time();//date("Y-m-d H:i:s");
-if((isset($_POST['username'])) and (isset($_POST['password'])))
+if((isset($_POST['username'])) and (isset($_POST['password']))  and (isset($_POST['tgllhr'])))
 {
-	$nomor_um = antiinjeksi($_POST['username']);
-	$password = antiinjeksi($_POST['password']);
-	$cekuser = mysqli_query($mysqli,"SELECT * FROM `kelulusan` WHERE `nomor_um`='$nomor_um' AND `password`='$password'");
-	$jmluser = mysqli_num_rows($cekuser);
-	$data = mysqli_fetch_array($cekuser);
-	if($jmluser > 0)
-	{
+    $nomor_um = antiinjeksi($_POST['username']);
+    $password = antiinjeksi($_POST['password']);
+	$tanggallahir =   antiinjeksi($_POST['tgllhr']);
+	$dd = substr($tanggallahir,0,2);
+	$mm = substr($tanggallahir,3,2);
+	$yy = substr($tanggallahir,6,4);
+	$tgllhr = $yy.'-'.$mm.'-'.$dd;//.'**'.$tanggal;
+//	die($tgllhr);
+    $cekuser = mysqli_query($mysqli,"SELECT * FROM `kelulusan` WHERE `nomor_um`='$nomor_um' AND `password`='$password' and `tgllhr`='$tgllhr'");
+    $jmluser = mysqli_num_rows($cekuser);
+    $data = mysqli_fetch_array($cekuser);
+    if($jmluser > 0)
+    {
         $nama  = $data['nama'];
 		?>
-				<div class="login-form">
-		    <form>
-        <h4 class="text-center text-danger">Informasi Kelulusan</h4>  
-		<h4 class="text-center text-danger"><?php echo $nama_sekolah;?></h4>  
-			<div class="form-group">
-			<div class="alert alert-info">Nomor peserta ujian <strong><?php echo $nomor_um;?></strong></div>
-			<div class="alert alert-success">Selamat Ananda <?php echo $nama;?> dinyatakan</div>
-			<h1 class="text-success text-center">LULUS</h1>
-
-			<p class="text-center"><a href="kelulusan.php" class="btn btn-primary">Selesai</a></p>
-		</div>
-		</div>
-		<?php
-    }
+		<div class="login-form">
+			<form>
+			<h4 class="text-center text-danger">Informasi Kelulusan</h4>  
+			<h4 class="text-center text-danger"><?php echo $nama_sekolah;?></h4>  
+			<?php
+		    if ($currentTime > strtotime($tanggal)) 
+			{?>
+				<div class="form-group">
+				<div class="alert alert-info">Nomor peserta ujian <strong><?php echo $nomor_um;?></strong> <strong></div>
+				<div class="alert alert-success text-center">Selamat Ananda <h3><?php echo $nama;?></h3> dinyatakan</div>
+				<h1 class="text-success text-center">LULUS</h1>
+				<p class="text-center"><a href="kelulusan.php" class="btn btn-primary">Selesai</a></p>
+				</div>
+				<?php
+			mysqli_query($mysqli,"UPDATE `kelulusan` SET `dilihat` = '1' WHERE `nomor_um`='$nomor_um'");
+			}
+			else
+			{?>
+		<p id="demo"></p>
+				<div class="form-group">
+				<div class="alert alert-info">Nomor peserta ujian <strong><?php echo $nomor_um;?></strong> <strong></div>
+				<div class="alert alert-success text-center"><h3><?php echo $nama;?></h3>
+				</div>
+				<hr><h4 class="text-info text-center">Sekarang belum waktunya kelulusan</h4>
+    		  			<p class="text-center"><a href="kelulusan.php" class="btn btn-primary">Muat Ulang</a></p>
+						<?php
+			}
+			echo '</form>';
+	}
 	else
 	{
-		?>
-		<div class="login-form">
-		    <form>
+	    ?>
+   		<div class="login-form">
+	    <form>
         <h4 class="text-center text-danger">Informasi Kelulusan</h4>  
 		<h4 class="text-center text-danger"><?php echo $nama_sekolah;?></h4>  
 			<div class="form-group">
-			<div class="alert alert-warning">Mohon maaf, data kelulusan nomor peserta ujian <strong><?php echo $nomor_um;?></strong> tidak kami temukan</div>
-			<div class="alert alert-info">Pastikan nomor peserta ujian dan password sudah dimasukkan dengan benar</div>
+			<div class="alert alert-warning">Mohon maaf, data kelulusan nomor peserta ujian <strong><?php echo $nomor_um;?></strong> <?php echo 'Lahir '.tanggal_panjang($tgllhr);?></strong> tidak kami temukan</div>
+			<div class="alert alert-info">Pastikan nomor peserta ujian, password, dan tanggal lahir sudah dimasukkan dengan benar</div>
 			</div>
 			<p class="text-center"><a href="kelulusan.php" class="btn btn-primary">Coba lagi</a></p>
 		</div>
 		</div>
-	<?php
+	    <?php
 	}
 }
 else
 {
 ?>
 <div class="login-form">
-    <form action="kelulusan.php" method="post">
-        <p id="demo"></p>
-		<h2 class="text-center">Log in</h2><hr>       
+        <form action="kelulusan.php" method="post">
+ 		<h2 class="text-center">Masuk</h2><hr>       
         <h4 class="text-center text-danger">Informasi Kelulusan</h4>  
-		<h4 class="text-center text-danger"><?php echo $nama_sekolah;?></h4>  
-		<?php
-		 //echo $currentTime.'<br>'.strtotime($tanggal).' '.$tanggal;
-		if ($currentTime > strtotime($tanggal)) 
-		{?>
-        <div class="form-group">
-            <input type="text" name="username" class="form-control" placeholder="Nomor Peserta Ujian Madrasah" required="required">
+		<h4 class="text-center text-danger"><?php echo $nama_sekolah;?></h4> <hr>        
+		    <div class="form-group">
+		            <label>Nomor Peserta Ujian Madrasah</label>
+            <input type="text" name="username" class="form-control" placeholder="Nomor Peserta Ujian Madrasah" id="nomor" required="required" autofocus>
         </div>
         <div class="form-group">
+		            <label>Password Ujian Madrasah</label>
             <input type="password" name="password" class="form-control" placeholder="Password" required="required">
         </div>
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-block">Log in</button>
+		        <div class="form-group">
+		            <label>Tanggal Lahir</label>
+            <input type="text" name="tgllhr" class="form-control" placeholder="Tanggal lahir" required="required" id="tgllhr">
         </div>
-        <?php
-		}
-		else
-		{
-    		  echo '<hr><h4 class="text-info text-center">Sekarang belum waktunya kelulusan</h4>
-    		  			<p class="text-center"><a href="kelulusan.php" class="btn btn-primary">Muat Ulang</a></p>';
-		}?>
+
+        <div class="form-group">
+            <button class="btn btn-primary btn-block">Masuk</button>
+        </div>
+			<p id="demo"></p>
     </form>
+
 </div>
 <?php
 }
@@ -235,7 +254,7 @@ var x = setInterval(function() {
   var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
   // Display the result in the element with id="demo"
-  document.getElementById("demo").innerHTML = "<p class=\"text-center\"><b>Rencana</b> Kelulusan akan diumumkan</p><p class=\"text-center\"><?php echo $tanggal_panjang;?></p><p class=\"text-center\">("+ days + " hari " + hours + " jam "
+  document.getElementById("demo").innerHTML = "<p class=\"text-center\">Kelulusan akan diumumkan</p><p class=\"text-center\"><?php echo $tanggal_panjang;?></p><p class=\"text-center\"><?php echo $pukul;?></p><p class=\"text-center\">("+ days + " hari " + hours + " jam "
   + minutes + " menit " + seconds + " detik)</p>";
 
   // If the count down is finished, write some text
@@ -245,6 +264,15 @@ var x = setInterval(function() {
   }
 }, 1000);
 </script>
+
 <?php
 }?>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
+        <script src="jquery.maskedinput.js"></script>
+        <script>
+        jQuery(function($){
+			$("#tgllhr").mask("99-99-9999")
+            $("#nomor").mask("999.99.99.999.999");
+        });
+        </script>
 </html>                                		                            
